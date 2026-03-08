@@ -6,12 +6,12 @@ import { PrimaryButton } from '../components/ui/Button';
 import { User, Mail, Moon, Sun, KeyRound, ShieldCheck } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
 import { getSettings, updateSettings } from '../services/api';
+import { useTheme } from '../hooks/useTheme';
 
 const Settings = () => {
     const [name, setName] = useState('Aditya Raj');
     const [email, setEmail] = useState('aditya@example.com');
-    // Using simple state to simulate toggle visual, the actual isDarkMode logic is in Sidebar
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useTheme();
     const [apiKey, setApiKey] = useState('');
     const [loading, setLoading] = useState(false);
 

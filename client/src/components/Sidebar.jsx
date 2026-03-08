@@ -11,18 +11,11 @@ import {
     Sun
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useTheme } from '../hooks/useTheme';
 
 const Sidebar = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
-
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [isDarkMode]);
+    const [theme, setTheme] = useTheme();
+    const isDarkMode = theme === 'dark';
 
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -82,7 +75,7 @@ const Sidebar = () => {
 
                 <div className="flex space-x-2">
                     <button
-                        onClick={() => setIsDarkMode(!isDarkMode)}
+                        onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
                         className="flex-1 flex justify-center items-center py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-100 dark:border-gray-700"
                     >
                         {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-indigo-500" />}
