@@ -3,9 +3,9 @@ import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { PrimaryButton } from '../components/ui/Button';
-import { Briefcase, Building2, Terminal, AlignLeft, CalendarClock } from 'lucide-react';
+import { Briefcase, Building2, Terminal, AlignLeft, CalendarClock, Trash2 } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
-import { getJobs, createJob } from '../services/api';
+import { getJobs, createJob, deleteJob } from '../services/api';
 
 
 
@@ -30,6 +30,16 @@ const Jobs = () => {
             console.error("Error fetching jobs:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this job posting?")) return;
+        try {
+            await deleteJob(id);
+            setJobs(jobs.filter(j => j._id !== id));
+        } catch (error) {
+            console.error("Error deleting job:", error);
         }
     };
 
@@ -156,7 +166,16 @@ const Jobs = () => {
                                     <CalendarClock className="w-4 h-4" />
                                     <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
                                 </div>
-                                <button className="text-blue-600 dark:text-blue-400 hover:underline">View Candidates</button>
+                                <div className="flex items-center space-x-3">
+                                    <button className="text-blue-600 dark:text-blue-400 hover:underline">View Candidates</button>
+                                    <button
+                                        onClick={() => handleDelete(job._id)}
+                                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"
+                                        title="Delete Job"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )) : (

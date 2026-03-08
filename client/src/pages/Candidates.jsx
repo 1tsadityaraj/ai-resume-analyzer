@@ -3,9 +3,9 @@ import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { Table, TableRow, TableCell } from '../components/ui/Table';
-import { Search, Filter, Users as UsersIcon } from 'lucide-react';
+import { Search, Filter, Users as UsersIcon, Trash2 } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
-import { getCandidates } from '../services/api';
+import { getCandidates, deleteCandidate } from '../services/api';
 
 const Candidates = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -27,6 +27,16 @@ const Candidates = () => {
         };
         fetchCandidates();
     }, []);
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this candidate?")) return;
+        try {
+            await deleteCandidate(id);
+            setCandidates(candidates.filter(c => c._id !== id));
+        } catch (error) {
+            console.error("Error deleting candidate:", error);
+        }
+    };
 
     // Filter logic
     const filteredCandidates = candidates.filter(c => {
@@ -83,7 +93,7 @@ const Candidates = () => {
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
                     </div>
                 ) : filteredCandidates.length > 0 ? (
-                    <Table headers={["Candidate Name", "Email", "ATS Score", "Top Skills", "Upload Date", "Status"]}>
+                    <Table headers={["Candidate Name", "Email", "ATS Score", "Top Skills", "Upload Date", "Status", "Actions"]}>
                         {filteredCandidates.map((c, i) => (
                             <TableRow key={i}>
                                 <TableCell className="font-medium text-gray-900 dark:text-gray-100">{c.name}</TableCell>
@@ -102,6 +112,14 @@ const Candidates = () => {
                                     <span className="px-2 py-1 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-full text-xs">
                                         {c.status || 'Analyzed'}
                                     </span>
+                                </TableCell>
+                                <TableCell>
+                                    <button
+                                        onClick={() => handleDelete(c._id)}
+                                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </TableCell>
                             </TableRow>
                         ))}
