@@ -7,17 +7,29 @@ import candidateRoutes from './routes/candidateRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai-resume-analyzer';
+let MONGO_URI = process.env.MONGO_URI;
 
 // Connect to MongoDB
-mongoose.connect(MONGO_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+const connectDB = async () => {
+    try {
+        if (!MONGO_URI || MONGO_URI.includes('127.0.0.1')) {
+            const mongoServer = await MongoMemoryServer.create();
+            MONGO_URI = mongoServer.getUri();
+            console.log('Started local MongoDB memory server');
+        }
+        await mongoose.connect(MONGO_URI);
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+    }
+};
+connectDB();
 
 // Middleware
 app.use(cors());
