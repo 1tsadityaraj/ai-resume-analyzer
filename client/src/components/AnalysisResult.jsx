@@ -23,7 +23,7 @@ const AnalysisResult = ({ data }) => {
     return (
         <div className="w-full max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header / Match Score Card */}
-            <div className="glass rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 mt-12 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700 shadow-sm">
+            <div className="glass rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700 shadow-sm">
                 <div className="space-y-2 text-center md:text-left">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                         Job Match Analysis

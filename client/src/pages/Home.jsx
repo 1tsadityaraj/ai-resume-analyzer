@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { analyzeResume } from '../services/api';
 import UploadDropzone from '../components/UploadDropzone';
 import AnalysisResult from '../components/AnalysisResult';
-import { Loader2, Briefcase, FileSearch } from 'lucide-react';
+import { Loader2, Briefcase, FileSearch, FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { UploadCard } from '../components/ui/UploadCard';
 import { PrimaryButton } from '../components/ui/Button';
@@ -95,9 +96,36 @@ const Home = () => {
 
             {/* Results Area */}
             {result && !loading && (
-                <div className="mt-16 border-t border-gray-200 dark:border-gray-800 pt-8">
-                    <AnalysisResult data={result} />
-                </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="mt-16 border-t border-gray-200 dark:border-gray-800 pt-12"
+                >
+                    <div className="grid lg:grid-cols-2 gap-8 items-start">
+                        {/* Resume Preview */}
+                        <div className="flex flex-col w-full h-full space-y-6 lg:sticky lg:top-8">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                                <FileText className="w-6 h-6 mr-3 text-indigo-500" />
+                                Resume Preview
+                            </h3>
+                            <div className="w-full h-[600px] lg:h-[800px] rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800/50">
+                                {file && (
+                                    <iframe
+                                        src={URL.createObjectURL(file)}
+                                        className="w-full h-full"
+                                        title="Resume Preview"
+                                    />
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Analysis Results */}
+                        <div className="flex flex-col w-full">
+                            <AnalysisResult data={result} />
+                        </div>
+                    </div>
+                </motion.div>
             )}
         </SectionContainer>
     );
