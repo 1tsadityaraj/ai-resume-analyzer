@@ -28,7 +28,7 @@ const Dashboard = () => {
             ]);
 
             const total = candidates.length;
-            const avg = total > 0 ? Math.round(candidates.reduce((acc, c) => acc + (c.atsScore || 0), 0) / total) : 0;
+            const avg = total > 0 ? Math.round(candidates.reduce((acc, c) => acc + (c.matchScore || c.atsScore || 0), 0) / total) : 0;
 
             setStats({
                 totalResumes: total,

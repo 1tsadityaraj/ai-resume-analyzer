@@ -35,8 +35,13 @@ export const analyzeResume = async (req, res) => {
         const newCandidate = new Candidate({
             name: req.file.originalname.split('.')[0] || 'Unknown',
             email: candidateEmail,
-            atsScore: aiAnalysis.atsScore || 0,
-            skills: aiAnalysis.skillsFound || [],
+            atsScore: aiAnalysis.matchScore || aiAnalysis.atsScore || 0,
+            matchScore: aiAnalysis.matchScore || 0,
+            skills: aiAnalysis.matchedSkills || [],
+            matchedSkills: aiAnalysis.matchedSkills || [],
+            missingSkills: aiAnalysis.missingSkills || [],
+            suggestions: aiAnalysis.suggestions || [],
+            jobDescription: jobDescription,
             status: 'Analyzed',
             resumeText: rawText
         });

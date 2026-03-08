@@ -1,74 +1,94 @@
-import { CheckCircle2, AlertCircle, TrendingUp, Key } from 'lucide-react';
+import { CheckCircle2, AlertCircle, TrendingUp } from 'lucide-react';
 
 const AnalysisResult = ({ data }) => {
     if (!data) return null;
 
-    const { atsScore, skillsFound, missingSkills, suggestions, keywordMatches } = data;
+    const matchScore = data.matchScore || data.atsScore || 0;
+    const matchedSkills = data.matchedSkills || data.skillsFound || [];
+    const missingSkills = data.missingSkills || [];
+    const suggestions = data.suggestions || [];
 
-    // Score color logic
-    let scoreColor = "text-red-500 dark:text-red-400";
-    let scoreRing = "border-red-500";
-    let scoreBg = "bg-red-50 dark:bg-red-500/10";
+    // Circular Progress Chart calculations
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (matchScore / 100) * circumference;
 
-    if (atsScore >= 80) {
-        scoreColor = "text-green-500 dark:text-green-400";
-        scoreRing = "border-green-500";
-        scoreBg = "bg-green-50 dark:bg-green-500/10";
-    } else if (atsScore >= 60) {
-        scoreColor = "text-yellow-500 dark:text-yellow-400";
-        scoreRing = "border-yellow-500";
-        scoreBg = "bg-yellow-50 dark:bg-yellow-500/10";
+    let scoreColor = "text-red-500 stroke-red-500 dark:text-red-400 dark:stroke-red-400";
+    if (matchScore >= 80) {
+        scoreColor = "text-green-500 stroke-green-500 dark:text-green-400 dark:stroke-green-400";
+    } else if (matchScore >= 60) {
+        scoreColor = "text-yellow-500 stroke-yellow-500 dark:text-yellow-400 dark:stroke-yellow-400";
     }
 
     return (
         <div className="w-full max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* ATS Score Header Card */}
-            <div className="glass rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 mt-12 dark:bg-gray-800/80">
+            {/* Header / Match Score Card */}
+            <div className="glass rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 mt-12 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700 shadow-sm">
                 <div className="space-y-2 text-center md:text-left">
-                    <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
-                        Resume Match Results
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        Job Match Analysis
                     </h2>
-                    <p className="text-gray-500 dark:text-gray-400">Based on standard Applicant Tracking Systems</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-lg">Detailed breakdown of how your resume fits the job description.</p>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
-                    <div className={`w-32 h-32 rounded-full border-8 flex items-center justify-center ${scoreRing} ${scoreBg}`}>
-                        <span className={`text-4xl font-bold ${scoreColor}`}>{atsScore}</span>
+                <div className="flex flex-col items-center justify-center relative">
+                    <svg className="w-36 h-36 transform -rotate-90">
+                        <circle
+                            className="text-gray-100 dark:text-gray-700 stroke-current"
+                            strokeWidth="12"
+                            cx="72"
+                            cy="72"
+                            r="50"
+                            fill="transparent"
+                        ></circle>
+                        <circle
+                            className={`${scoreColor} transition-all duration-1000 ease-out`}
+                            strokeWidth="12"
+                            strokeLinecap="round"
+                            cx="72"
+                            cy="72"
+                            r="50"
+                            fill="transparent"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={strokeDashoffset}
+                        ></circle>
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span className={`text-4xl font-extrabold ${scoreColor.split(' ')[0]}`}>{matchScore}%</span>
                     </div>
-                    <p className="mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ATS Score</p>
                 </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-                {/* Identified Skills Card */}
-                <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+                {/* Matched Skills */}
+                <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/80">
                     <div className="flex items-center space-x-3 mb-6">
-                        <div className="p-2 bg-green-100 dark:bg-green-500/20 rounded-lg">
+                        <div className="p-2 bg-green-100 dark:bg-green-900/40 rounded-lg">
                             <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Skills Found</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Matched Skills</h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {skillsFound.map((skill, index) => (
-                            <span key={index} className="px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-sm font-medium rounded-full border border-green-200 dark:border-green-500/20">
+                        {matchedSkills.map((skill, index) => (
+                            <span key={index} className="px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-sm font-medium rounded-full border border-green-200 dark:border-green-500/20 shadow-sm">
                                 {skill}
                             </span>
                         ))}
-                        {skillsFound.length === 0 && <span className="text-gray-500 dark:text-gray-400 italic">No exact skill matches found.</span>}
+                        {matchedSkills.length === 0 && <span className="text-gray-500 dark:text-gray-400 italic">No exact skill matches found.</span>}
                     </div>
                 </div>
 
-                {/* Missing Skills Card */}
-                <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+                {/* Missing Skills */}
+                <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/80">
                     <div className="flex items-center space-x-3 mb-6">
-                        <div className="p-2 bg-red-100 dark:bg-red-500/20 rounded-lg">
+                        <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
                             <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Missing Key Skills</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Missing Skills</h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {missingSkills.map((skill, index) => (
-                            <span key={index} className="px-3 py-1 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-medium rounded-full border border-red-200 dark:border-red-500/20">
+                            <span key={index} className="px-3 py-1.5 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-sm font-medium rounded-full border border-red-200 dark:border-red-500/20 shadow-sm">
                                 {skill}
                             </span>
                         ))}
@@ -77,26 +97,22 @@ const AnalysisResult = ({ data }) => {
                 </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-                {/* Suggestions Card */}
-                <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow md:col-span-2">
-                    <div className="flex items-center space-x-3 mb-6">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-500/20 rounded-lg">
-                            <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">AI Improvement Suggestions</h3>
+            {/* Suggestions */}
+            <div className="glass rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 bg-white/50 dark:bg-gray-800/80">
+                <div className="flex items-center space-x-3 mb-6">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
+                        <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <ul className="space-y-4">
-                        {suggestions.map((suggestion, index) => (
-                            <li key={index} className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-800/60 rounded-xl border border-gray-100 dark:border-gray-700">
-                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-bold">
-                                    {index + 1}
-                                </span>
-                                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{suggestion}</p>
-                            </li>
-                        ))}
-                    </ul>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Recommendations</h3>
                 </div>
+                <ul className="space-y-4">
+                    {suggestions.map((suggestion, index) => (
+                        <li key={index} className="flex items-start space-x-3 p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-50 dark:border-blue-900/20 transition-all hover:shadow-md">
+                            <span className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-blue-500"></span>
+                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">{suggestion}</p>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     );

@@ -42,9 +42,10 @@ const Candidates = () => {
     const filteredCandidates = candidates.filter(c => {
         const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (c.matchedSkills && c.matchedSkills.join(',').toLowerCase().includes(searchTerm.toLowerCase())) ||
             (c.skills && c.skills.join(',').toLowerCase().includes(searchTerm.toLowerCase()));
 
-        const score = c.atsScore || 0;
+        const score = c.matchScore || c.atsScore || 0;
         let matchesScore = true;
         if (filterScore === 'high') matchesScore = score >= 80;
         else if (filterScore === 'medium') matchesScore = score >= 50 && score < 80;
@@ -93,36 +94,40 @@ const Candidates = () => {
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
                     </div>
                 ) : filteredCandidates.length > 0 ? (
-                    <Table headers={["Candidate Name", "Email", "ATS Score", "Top Skills", "Upload Date", "Status", "Actions"]}>
-                        {filteredCandidates.map((c, i) => (
-                            <TableRow key={i}>
-                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">{c.name}</TableCell>
-                                <TableCell>{c.email}</TableCell>
-                                <TableCell>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${c.atsScore >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' :
-                                        c.atsScore >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400' :
-                                            'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
-                                        }`}>
-                                        {c.atsScore || 0}%
-                                    </span>
-                                </TableCell>
-                                <TableCell className="truncate max-w-xs">{c.skills ? c.skills.join(', ') : 'N/A'}</TableCell>
-                                <TableCell>{new Date(c.uploadedAt).toLocaleDateString()}</TableCell>
-                                <TableCell>
-                                    <span className="px-2 py-1 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-full text-xs">
-                                        {c.status || 'Analyzed'}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <button
-                                        onClick={() => handleDelete(c._id)}
-                                        className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                    <Table headers={["Candidate Name", "Email", "Match Score", "Top Skills", "Upload Date", "Status", "Actions"]}>
+                        {filteredCandidates.map((c, i) => {
+                            const matchScore = c.matchScore || c.atsScore || 0;
+                            const skillsList = c.matchedSkills?.length > 0 ? c.matchedSkills : c.skills;
+                            return (
+                                <TableRow key={i}>
+                                    <TableCell className="font-medium text-gray-900 dark:text-gray-100">{c.name}</TableCell>
+                                    <TableCell>{c.email}</TableCell>
+                                    <TableCell>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${matchScore >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' :
+                                            matchScore >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400' :
+                                                'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                                            }`}>
+                                            {matchScore}%
+                                        </span>
+                                    </TableCell>
+                                    <TableCell className="truncate max-w-xs">{skillsList?.length > 0 ? skillsList.join(', ') : 'N/A'}</TableCell>
+                                    <TableCell>{new Date(c.uploadedAt).toLocaleDateString()}</TableCell>
+                                    <TableCell>
+                                        <span className="px-2 py-1 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-full text-xs">
+                                            {c.status || 'Analyzed'}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <button
+                                            onClick={() => handleDelete(c._id)}
+                                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
                     </Table>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">

@@ -11,11 +11,31 @@ const candidateSchema = new mongoose.Schema({
     },
     atsScore: {
         type: Number,
-        required: true
+        default: 0
+    },
+    matchScore: {
+        type: Number,
+        default: 0
     },
     skills: {
         type: [String],
         default: []
+    },
+    matchedSkills: {
+        type: [String],
+        default: []
+    },
+    missingSkills: {
+        type: [String],
+        default: []
+    },
+    suggestions: {
+        type: [String],
+        default: []
+    },
+    jobDescription: {
+        type: String,
+        default: ''
     },
     status: {
         type: String,

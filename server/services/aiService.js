@@ -16,17 +16,15 @@ export const generateResumeFeedback = async (resumeText, jobDescription) => {
     }
 
     if (!apiKey) {
-        // Return dummy data if no API key is set for local testing
         return {
-            atsScore: 78,
-            skillsFound: ['React', 'Node.js', 'MongoDB', 'JavaScript'],
-            missingSkills: ['TypeScript', 'Docker', 'System Design'],
+            matchScore: 76,
+            matchedSkills: ['React', 'Node.js', 'MongoDB', 'JavaScript'],
+            missingSkills: ['TypeScript', 'Docker', 'System Design', 'Kubernetes'],
             suggestions: [
-                'Add more measurable achievements (e.g., "Increased performance by 30%").',
-                'Include your knowledge of testing frameworks.',
-                'Improve the visual formatting of the projects section.'
-            ],
-            keywordMatches: ['React', 'Node.js']
+                'Add experience with Docker containers.',
+                'Include cloud infrastructure tools.',
+                'Mention system design architectures explicitly.'
+            ]
         };
     }
 
@@ -34,8 +32,12 @@ export const generateResumeFeedback = async (resumeText, jobDescription) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-    You are an expert ATS (Applicant Tracking System) and senior tech recruiter.
-    Analyze the following resume against the following target Job Description:
+    Compare the following resume and job description. 
+    Return:
+    - matchScore (0-100)
+    - matchedSkills
+    - missingSkills
+    - suggestions to improve the resume.
     
     Job Description:
     """
@@ -47,14 +49,7 @@ export const generateResumeFeedback = async (resumeText, jobDescription) => {
     ${resumeText.substring(0, 5000)} // Limiting size slightly
     """
     
-    Provide your output STRICTLY in the following JSON format:
-    {
-      "atsScore": a number between 0 and 100 representing the match,
-      "skillsFound": [an array of technical/soft skills found in the resume relevant to the role],
-      "missingSkills": [an array of key skills expected for this job description but missing],
-      "suggestions": [an array of 3-5 specific, actionable suggestions to improve the resume],
-      "keywordMatches": [an array of keywords from the resume that perfectly match the job description]
-    }
+    Return JSON only.
   `;
 
     try {

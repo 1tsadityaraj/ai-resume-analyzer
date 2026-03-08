@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
             }
 
             // Score Distribution
-            const score = candidate.atsScore || 0;
+            const score = candidate.matchScore || candidate.atsScore || 0;
             if (score >= 90) scoreDistributionMap['90-100']++;
             else if (score >= 80) scoreDistributionMap['80-89']++;
             else if (score >= 70) scoreDistributionMap['70-79']++;
@@ -46,8 +46,9 @@ router.get('/', async (req, res) => {
             else scoreDistributionMap['<60']++;
 
             // Top Skills
-            if (candidate.skills && Array.isArray(candidate.skills)) {
-                candidate.skills.forEach(skill => {
+            const skills = candidate.matchedSkills?.length > 0 ? candidate.matchedSkills : candidate.skills;
+            if (skills && Array.isArray(skills)) {
+                skills.forEach(skill => {
                     skillsCount[skill] = (skillsCount[skill] || 0) + 1;
                 });
             }
