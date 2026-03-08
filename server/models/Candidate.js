@@ -21,6 +21,10 @@ const candidateSchema = new mongoose.Schema({
         type: String,
         default: 'Analyzed'
     },
+    resumeText: {
+        type: String,
+        default: ''
+    },
     uploadedAt: {
         type: Date,
         default: Date.now

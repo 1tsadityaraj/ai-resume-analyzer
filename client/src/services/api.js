@@ -21,6 +21,16 @@ export const getCandidates = async () => {
     return response.data;
 };
 
+export const getCandidateById = async (id) => {
+    const response = await axios.get(`${API_BASE_URL}/candidates/${id}`);
+    return response.data;
+};
+
+export const deleteCandidate = async (id) => {
+    const response = await axios.delete(`${API_BASE_URL}/candidates/${id}`);
+    return response.data;
+};
+
 export const getJobs = async () => {
     const response = await axios.get(`${API_BASE_URL}/jobs`);
     return response.data;
@@ -28,6 +38,11 @@ export const getJobs = async () => {
 
 export const createJob = async (jobData) => {
     const response = await axios.post(`${API_BASE_URL}/jobs`, jobData);
+    return response.data;
+};
+
+export const deleteJob = async (id) => {
+    const response = await axios.delete(`${API_BASE_URL}/jobs/${id}`);
     return response.data;
 };
 

@@ -2,7 +2,7 @@ import fs from 'fs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
-import { generateResumeFeedback } from '../utils/ai.js';
+import { generateResumeFeedback } from '../services/aiService.js';
 import Candidate from '../models/Candidate.js';
 
 export const analyzeResume = async (req, res) => {
@@ -37,7 +37,8 @@ export const analyzeResume = async (req, res) => {
             email: candidateEmail,
             atsScore: aiAnalysis.atsScore || 0,
             skills: aiAnalysis.skillsFound || [],
-            status: 'Analyzed'
+            status: 'Analyzed',
+            resumeText: rawText
         });
         await newCandidate.save();
 
