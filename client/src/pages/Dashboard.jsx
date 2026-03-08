@@ -55,50 +55,15 @@ const Dashboard = () => {
                 subtitle="AI-powered recruitment insights and candidate analysis."
                 rightElement={
                     <>
-                        <div className="flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-800 font-medium space-x-2">
-                            <Info className="w-3.5 h-3.5" />
-                            <span>Demo Mode</span>
-                            <span className="bg-blue-200/50 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full text-[10px]">Checking...</span>
-                        </div>
-                        <button onClick={loadDashboardData} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                        <button onClick={loadDashboardData} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors font-medium">
                             <RotateCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                         </button>
                         <div className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs px-4 py-2 rounded-full font-medium">
-                            Updated: 10:40:42 PM
+                            Live API active
                         </div>
                     </>
                 }
             />
-
-            {/* Banner */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-100/50 dark:border-blue-800/50 rounded-2xl p-6 shadow-sm">
-                <div className="flex items-start space-x-3 mb-4">
-                    <Info className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">Demo Mode Active</h3>
-                        <p className="text-blue-700/80 dark:text-blue-300/80 text-sm mb-4">
-                            You're experiencing the full ATS interface with realistic demo data. All features are functional for testing and exploration.
-                        </p>
-
-                        <div className="flex flex-wrap gap-4 text-xs text-blue-600 dark:text-blue-400 mb-4 font-medium">
-                            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-1.5 text-blue-500" /> Interactive UI demonstration</span>
-                            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-1.5 text-blue-500" /> Realistic mock analysis results</span>
-                            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-1.5 text-blue-500" /> File upload simulation</span>
-                            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-1.5 text-blue-500" /> Chart visualizations</span>
-                        </div>
-
-                        <div className="flex items-center justify-between mt-2">
-                            <span className="text-sm font-medium text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer">
-                                Want real AI analysis? Set up the Python backend →
-                            </span>
-                            <SecondaryButton>
-                                <span>Connecting...</span>
-                                <span className="opacity-80">Setup Guide</span>
-                            </SecondaryButton>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
