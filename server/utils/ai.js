@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const generateResumeFeedback = async (resumeText, targetRole) => {
+export const generateResumeFeedback = async (resumeText, jobDescription) => {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy_key');
     if (!process.env.GEMINI_API_KEY) {
         // Return dummy data if no API key is set for local testing
@@ -23,7 +23,12 @@ export const generateResumeFeedback = async (resumeText, targetRole) => {
 
     const prompt = `
     You are an expert ATS (Applicant Tracking System) and senior tech recruiter.
-    Analyze the following resume against the target role: "${targetRole}"
+    Analyze the following resume against the following target Job Description:
+    
+    Job Description:
+    """
+    ${jobDescription}
+    """
     
     Resume Text:
     """
@@ -34,9 +39,9 @@ export const generateResumeFeedback = async (resumeText, targetRole) => {
     {
       "atsScore": a number between 0 and 100 representing the match,
       "skillsFound": [an array of technical/soft skills found in the resume relevant to the role],
-      "missingSkills": [an array of key skills expected for this role but missing],
+      "missingSkills": [an array of key skills expected for this job description but missing],
       "suggestions": [an array of 3-5 specific, actionable suggestions to improve the resume],
-      "keywordMatches": [an array of keywords from the resume that perfectly match the job role]
+      "keywordMatches": [an array of keywords from the resume that perfectly match the job description]
     }
   `;
 

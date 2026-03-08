@@ -3,20 +3,14 @@ import { analyzeResume } from '../services/api';
 import UploadDropzone from '../components/UploadDropzone';
 import AnalysisResult from '../components/AnalysisResult';
 import { Loader2, Briefcase, FileSearch } from 'lucide-react';
-
-const ROLES = [
-    "Frontend Developer",
-    "Backend Developer",
-    "Full Stack Developer",
-    "MERN Stack Developer",
-    "Software Engineer",
-    "Data Scientist",
-    "Product Manager"
-];
+import { SectionContainer } from '../components/ui/SectionContainer';
+import { UploadCard } from '../components/ui/UploadCard';
+import { PrimaryButton } from '../components/ui/Button';
+import { designSystem } from '../utils/designSystem';
 
 const Home = () => {
     const [file, setFile] = useState(null);
-    const [targetRole, setTargetRole] = useState(ROLES[0]);
+    const [jobDescription, setJobDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
@@ -31,7 +25,7 @@ const Home = () => {
         setError('');
 
         try {
-            const response = await analyzeResume(file, targetRole);
+            const response = await analyzeResume(file, jobDescription);
             setResult(response.data.analysis);
         } catch (err) {
             setError(err.response?.data?.error || "An error occurred during analysis.");
@@ -42,89 +36,70 @@ const Home = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header / Hero Section */}
-            <div className="bg-white border-b sticky top-0 z-50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center space-x-2">
-                            <FileSearch className="w-6 h-6 text-blue-600" />
-                            <span className="font-bold text-xl tracking-tight text-gray-900">Resume<span className="text-blue-600">AI</span></span>
-                        </div>
-                    </div>
-                </div>
+        <SectionContainer>
+            <div className="text-center mb-12">
+                <h1 className={`${designSystem.typography.pageTitle} text-4xl md:text-5xl font-extrabold tracking-tight mb-4`}>
+                    Is Your Resume <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">ATS-Ready?</span>
+                </h1>
+                <p className={`${designSystem.typography.body} text-lg max-w-2xl mx-auto`}>
+                    Paste the target job description and upload your resume. Our AI will analyze your fit, highlight missing skills, and provide actionable feedback.
+                </p>
             </div>
 
-            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">
-                        Is Your Resume <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">ATS-Ready?</span>
-                    </h1>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Upload your resume, select your target role, and let our AI analyze your fit, highlight missing skills, and provide actionable feedback.
-                    </p>
-                </div>
+            <UploadCard className="max-w-3xl mx-auto">
+                <div className="space-y-8">
+                    {/* Job Description Textarea */}
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center dark:text-gray-100">
+                            <Briefcase className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            Paste Job Description
+                        </label>
+                        <textarea
+                            rows={5}
+                            placeholder="E.g., We are looking for a Software Engineer with experience in React, Node.js..."
+                            value={jobDescription}
+                            onChange={(e) => setJobDescription(e.target.value)}
+                            className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-4 outline-none transition-all hover:bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800 resize-none"
+                        />
+                    </div>
 
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 mb-8 max-w-2xl mx-auto">
-                    <div className="space-y-8">
-                        {/* Role Selection */}
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                                <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
-                                Target Job Role
-                            </label>
-                            <select
-                                value={targetRole}
-                                onChange={(e) => setTargetRole(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition-all hover:bg-white"
-                            >
-                                {ROLES.map(role => (
-                                    <option key={role} value={role}>{role}</option>
-                                ))}
-                            </select>
+                    {/* Upload Area */}
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2 dark:text-gray-100">Resume Document (PDF)</label>
+                        <UploadDropzone onFileSelect={setFile} />
+                    </div>
+
+                    {error && (
+                        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+                            {error}
                         </div>
+                    )}
 
-                        {/* Upload Area */}
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-900 mb-2">Resume Document (PDF)</label>
-                            <UploadDropzone onFileSelect={setFile} />
-                        </div>
-
-                        {error && (
-                            <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-                                {error}
+                    {/* Submit Button */}
+                    <PrimaryButton
+                        onClick={handleAnalyze}
+                        disabled={loading || !file}
+                        loading={loading}
+                    >
+                        {loading ? (
+                            <div className="flex items-center space-x-2 animate-pulse">
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>Analyzing Resume with AI...</span>
                             </div>
+                        ) : (
+                            'Analyze Resume'
                         )}
-
-                        {/* Submit Button */}
-                        <button
-                            onClick={handleAnalyze}
-                            disabled={loading || !file}
-                            className={`w-full py-4 px-6 rounded-xl text-white font-semibold flex justify-center items-center transition-all duration-200 ${loading || !file
-                                    ? 'bg-gray-300 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5'
-                                }`}
-                        >
-                            {loading ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Analyzing Resume with AI...
-                                </>
-                            ) : (
-                                'Analyze Resume'
-                            )}
-                        </button>
-                    </div>
+                    </PrimaryButton>
                 </div>
+            </UploadCard>
 
-                {/* Results Area */}
-                {result && !loading && (
-                    <div className="mt-16 border-t border-gray-200">
-                        <AnalysisResult data={result} />
-                    </div>
-                )}
-            </main>
-        </div>
+            {/* Results Area */}
+            {result && !loading && (
+                <div className="mt-16 border-t border-gray-200 dark:border-gray-800 pt-8">
+                    <AnalysisResult data={result} />
+                </div>
+            )}
+        </SectionContainer>
     );
 };
 

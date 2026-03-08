@@ -10,9 +10,9 @@ export const analyzeResume = async (req, res) => {
             return res.status(400).json({ error: 'No resume file uploaded' });
         }
 
-        const { targetRole } = req.body;
-        if (!targetRole) {
-            return res.status(400).json({ error: 'Target job role is required' });
+        const { jobDescription } = req.body;
+        if (!jobDescription) {
+            return res.status(400).json({ error: 'Target job description is required' });
         }
 
         // Read and parse PDF
@@ -24,7 +24,7 @@ export const analyzeResume = async (req, res) => {
         fs.unlinkSync(req.file.path);
 
         // Call AI to analyze resume text
-        const aiAnalysis = await generateResumeFeedback(rawText, targetRole);
+        const aiAnalysis = await generateResumeFeedback(rawText, jobDescription);
 
         res.json({
             success: true,

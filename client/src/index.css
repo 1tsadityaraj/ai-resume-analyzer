@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-primary-50: #eff6ff;
@@ -19,6 +20,6 @@ body {
 
 @layer utilities {
   .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl dark:bg-gray-800/70 dark:border-gray-700/50 dark:shadow-gray-900/50;
   }
 }
