@@ -1,23 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { PrimaryButton } from '../components/ui/Button';
 import { User, Mail, Moon, Sun, KeyRound, ShieldCheck } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
+import { getSettings, updateSettings } from '../services/api';
 
 const Settings = () => {
     const [name, setName] = useState('Aditya Raj');
     const [email, setEmail] = useState('aditya@example.com');
     // Using simple state to simulate toggle visual, the actual isDarkMode logic is in Sidebar
     const [theme, setTheme] = useState('dark');
-    const [apiKey, setApiKey] = useState('************************');
+    const [apiKey, setApiKey] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSave = (e) => {
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const data = await getSettings();
+                if (data && data.geminiApiKey) {
+                    setApiKey(data.geminiApiKey);
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    const handleSave = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => setLoading(false), 1000);
+        try {
+            await updateSettings({ geminiApiKey: apiKey });
+            // Add UI notification logic here if needed
+        } catch (error) {
+            console.error("Error saving settings:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

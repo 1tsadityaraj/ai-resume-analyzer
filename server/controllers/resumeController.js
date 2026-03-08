@@ -3,6 +3,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 import { generateResumeFeedback } from '../utils/ai.js';
+import Candidate from '../models/Candidate.js';
 
 export const analyzeResume = async (req, res) => {
     try {
@@ -25,6 +26,20 @@ export const analyzeResume = async (req, res) => {
 
         // Call AI to analyze resume text
         const aiAnalysis = await generateResumeFeedback(rawText, jobDescription);
+
+        // Try extracting early name from raw text via simple regex (first matching pattern that looks like a name or email)
+        const emailMatch = rawText.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/);
+        const candidateEmail = emailMatch ? emailMatch[1] : `user-${Date.now()}@example.com`;
+
+        // Save to DB
+        const newCandidate = new Candidate({
+            name: req.file.originalname.split('.')[0] || 'Unknown',
+            email: candidateEmail,
+            atsScore: aiAnalysis.atsScore || 0,
+            skills: aiAnalysis.skillsFound || [],
+            status: 'Analyzed'
+        });
+        await newCandidate.save();
 
         res.json({
             success: true,

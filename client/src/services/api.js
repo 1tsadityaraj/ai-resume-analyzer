@@ -15,3 +15,33 @@ export const analyzeResume = async (file, jobDescription) => {
 
     return response.data;
 };
+
+export const getCandidates = async () => {
+    const response = await axios.get(`${API_BASE_URL}/candidates`);
+    return response.data;
+};
+
+export const getJobs = async () => {
+    const response = await axios.get(`${API_BASE_URL}/jobs`);
+    return response.data;
+};
+
+export const createJob = async (jobData) => {
+    const response = await axios.post(`${API_BASE_URL}/jobs`, jobData);
+    return response.data;
+};
+
+export const getAnalytics = async () => {
+    const response = await axios.get(`${API_BASE_URL}/analytics`);
+    return response.data;
+};
+
+export const getSettings = async () => {
+    const response = await axios.get(`${API_BASE_URL}/settings`);
+    return response.data;
+};
+
+export const updateSettings = async (settingsData) => {
+    const response = await axios.post(`${API_BASE_URL}/settings`, settingsData);
+    return response.data;
+};

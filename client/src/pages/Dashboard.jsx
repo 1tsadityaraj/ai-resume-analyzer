@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Info, CheckCircle2, RotateCw, FileText, Users, Star, Clock, MoreVertical } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { SectionContainer } from '../components/ui/SectionContainer';
@@ -6,14 +7,46 @@ import { DashboardCard } from '../components/ui/DashboardCard';
 import { SecondaryButton } from '../components/ui/Button';
 import { designSystem } from '../utils/designSystem';
 
-const dummyData = [
-    { name: 'Week 1', apps: 4 },
-    { name: 'Week 2', apps: 12 },
-    { name: 'Week 3', apps: 8 },
-    { name: 'Week 4', apps: 24 },
-];
+import { getCandidates, getAnalytics } from '../services/api';
 
 const Dashboard = () => {
+    const [stats, setStats] = useState({
+        totalResumes: 0,
+        avgScore: 0,
+        topSkills: [],
+        monthlyData: []
+    });
+
+    const [loading, setLoading] = useState(true);
+
+    const loadDashboardData = async () => {
+        setLoading(true);
+        try {
+            const [candidates, analytics] = await Promise.all([
+                getCandidates(),
+                getAnalytics()
+            ]);
+
+            const total = candidates.length;
+            const avg = total > 0 ? Math.round(candidates.reduce((acc, c) => acc + (c.atsScore || 0), 0) / total) : 0;
+
+            setStats({
+                totalResumes: total,
+                avgScore: avg,
+                topSkills: analytics.topSkills || [],
+                monthlyData: analytics.monthlyUploads || []
+            });
+        } catch (error) {
+            console.error("Error loading dashboard data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadDashboardData();
+    }, []);
+
     return (
         <SectionContainer>
             {/* Header section */}
@@ -27,8 +60,8 @@ const Dashboard = () => {
                             <span>Demo Mode</span>
                             <span className="bg-blue-200/50 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full text-[10px]">Checking...</span>
                         </div>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-                            <RotateCw className="w-5 h-5" />
+                        <button onClick={loadDashboardData} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                            <RotateCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                         </button>
                         <div className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs px-4 py-2 rounded-full font-medium">
                             Updated: 10:40:42 PM
@@ -80,7 +113,7 @@ const Dashboard = () => {
                         </span>
                     </div>
                     <div>
-                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">0</h4>
+                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalResumes}</h4>
                         <p className={designSystem.typography.body + " mt-1"}>Total Resumes</p>
                     </div>
                 </DashboardCard>
@@ -96,7 +129,7 @@ const Dashboard = () => {
                         </span>
                     </div>
                     <div>
-                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">0</h4>
+                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalResumes}</h4>
                         <p className={designSystem.typography.body + " mt-1"}>Analyzed Candidates</p>
                     </div>
                 </DashboardCard>
@@ -112,7 +145,7 @@ const Dashboard = () => {
                         </span>
                     </div>
                     <div>
-                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">0%</h4>
+                        <h4 className="text-2xl font-bold text-gray-900 dark:text-white">{stats.avgScore}%</h4>
                         <p className={designSystem.typography.body + " mt-1"}>Avg. Match Score</p>
                     </div>
                 </DashboardCard>
@@ -146,7 +179,7 @@ const Dashboard = () => {
                     </div>
                     <div className="flex-1 w-full relative -ml-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={dummyData}>
+                            <LineChart data={stats.monthlyData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} dy={10} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} />
@@ -156,7 +189,7 @@ const Dashboard = () => {
                                 />
                                 <Line
                                     type="monotone"
-                                    dataKey="apps"
+                                    dataKey="resumes"
                                     stroke="#6366F1"
                                     strokeWidth={3}
                                     dot={{ r: 4, strokeWidth: 2 }}
@@ -175,12 +208,27 @@ const Dashboard = () => {
                             <MoreVertical className="w-5 h-5" />
                         </button>
                     </div>
-                    <div className="flex-1 flex items-center justify-center flex-col text-gray-400">
-                        <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 flex items-center justify-center rounded-full mb-3">
-                            <Star className="w-8 h-8 text-gray-300 dark:text-gray-500" />
-                        </div>
-                        <p className={designSystem.typography.body + " font-medium"}>No skills detected yet</p>
-                        <p className="text-xs mt-1">Upload resumes to see analytics</p>
+                    <div className="flex-1 flex items-center justify-center flex-col text-gray-400 p-4">
+                        {stats.topSkills.length > 0 ? (
+                            <div className="w-full space-y-3 mt-4">
+                                {stats.topSkills.map((skill, idx) => (
+                                    <div key={idx} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                                        <span className="font-medium text-gray-800 dark:text-gray-200 text-sm">{skill.name}</span>
+                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-md">
+                                            {skill.value} candidates
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <>
+                                <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 flex items-center justify-center rounded-full mb-3 mt-8">
+                                    <Star className="w-8 h-8 text-gray-300 dark:text-gray-500" />
+                                </div>
+                                <p className={designSystem.typography.body + " font-medium"}>No skills detected yet</p>
+                                <p className="text-xs mt-1">Upload resumes to see analytics</p>
+                            </>
+                        )}
                     </div>
                 </DashboardCard>
             </div>

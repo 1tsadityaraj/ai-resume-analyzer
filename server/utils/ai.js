@@ -1,10 +1,21 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
+import Settings from '../models/Settings.js';
 dotenv.config();
 
 export const generateResumeFeedback = async (resumeText, jobDescription) => {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy_key');
-    if (!process.env.GEMINI_API_KEY) {
+    // 1. Check DB first, fallback to env
+    let apiKey = process.env.GEMINI_API_KEY;
+    try {
+        const settings = await Settings.findOne();
+        if (settings && settings.geminiApiKey) {
+            apiKey = settings.geminiApiKey;
+        }
+    } catch (e) {
+        console.error("Failed to load settings:", e);
+    }
+
+    if (!apiKey) {
         // Return dummy data if no API key is set for local testing
         return {
             atsScore: 78,
@@ -19,6 +30,7 @@ export const generateResumeFeedback = async (resumeText, jobDescription) => {
         };
     }
 
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `

@@ -1,21 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { Table, TableRow, TableCell } from '../components/ui/Table';
 import { Search, Filter, Users as UsersIcon } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
-
-const mockCandidates = [
-    // Leave empty for empty state or provide some items
-];
+import { getCandidates } from '../services/api';
 
 const Candidates = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterScore, setFilterScore] = useState('all');
 
-    // For demo purposes, we will treat mockCandidates as empty to show the empty state requested
-    const candidates = mockCandidates;
+    const [candidates, setCandidates] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCandidates = async () => {
+            try {
+                const data = await getCandidates();
+                setCandidates(data);
+            } catch (error) {
+                console.error("Error fetching candidates:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCandidates();
+    }, []);
+
+    // Filter logic
+    const filteredCandidates = candidates.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (c.skills && c.skills.join(',').toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const score = c.atsScore || 0;
+        let matchesScore = true;
+        if (filterScore === 'high') matchesScore = score >= 80;
+        else if (filterScore === 'medium') matchesScore = score >= 50 && score < 80;
+        else if (filterScore === 'low') matchesScore = score < 50;
+
+        return matchesSearch && matchesScore;
+    });
 
     return (
         <SectionContainer>
@@ -52,25 +78,29 @@ const Candidates = () => {
             />
 
             <DashboardCard className="p-0 overflow-hidden">
-                {candidates.length > 0 ? (
+                {loading ? (
+                    <div className="flex justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                    </div>
+                ) : filteredCandidates.length > 0 ? (
                     <Table headers={["Candidate Name", "Email", "ATS Score", "Top Skills", "Upload Date", "Status"]}>
-                        {candidates.map((c, i) => (
+                        {filteredCandidates.map((c, i) => (
                             <TableRow key={i}>
                                 <TableCell className="font-medium text-gray-900 dark:text-gray-100">{c.name}</TableCell>
                                 <TableCell>{c.email}</TableCell>
                                 <TableCell>
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${c.score >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' :
-                                            c.score >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400' :
-                                                'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${c.atsScore >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' :
+                                        c.atsScore >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400' :
+                                            'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
                                         }`}>
-                                        {c.score}%
+                                        {c.atsScore || 0}%
                                     </span>
                                 </TableCell>
-                                <TableCell className="truncate max-w-xs">{c.skills.join(', ')}</TableCell>
-                                <TableCell>{c.date}</TableCell>
+                                <TableCell className="truncate max-w-xs">{c.skills ? c.skills.join(', ') : 'N/A'}</TableCell>
+                                <TableCell>{new Date(c.uploadedAt).toLocaleDateString()}</TableCell>
                                 <TableCell>
                                     <span className="px-2 py-1 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-full text-xs">
-                                        {c.status}
+                                        {c.status || 'Analyzed'}
                                     </span>
                                 </TableCell>
                             </TableRow>

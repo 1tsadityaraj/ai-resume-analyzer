@@ -1,49 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { PrimaryButton } from '../components/ui/Button';
 import { Briefcase, Building2, Terminal, AlignLeft, CalendarClock } from 'lucide-react';
 import { designSystem } from '../utils/designSystem';
+import { getJobs, createJob } from '../services/api';
 
-const mockJobs = [
-    {
-        title: "Frontend Developer (React)",
-        company: "Tech Corp Inc.",
-        skills: "React, TypeScript, Tailwind",
-        date: "Oct 24, 2023",
-        status: "Active"
-    },
-    {
-        title: "Senior Node.js Engineer",
-        company: "StartupLab",
-        skills: "Node.js, Express, MongoDB, AWS",
-        date: "Oct 20, 2023",
-        status: "Active"
-    }
-];
+
 
 const Jobs = () => {
     const [title, setTitle] = useState('');
     const [company, setCompany] = useState('');
     const [skills, setSkills] = useState('');
     const [description, setDescription] = useState('');
-    const [jobs, setJobs] = useState(mockJobs);
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        fetchJobs();
+    }, []);
+
+    const fetchJobs = async () => {
+        try {
+            const data = await getJobs();
+            setJobs(data);
+        } catch (error) {
+            console.error("Error fetching jobs:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const newJob = {
-            title,
-            company,
-            skills,
-            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            status: "Active"
-        };
-        setJobs([newJob, ...jobs]);
-        setTitle('');
-        setCompany('');
-        setSkills('');
-        setDescription('');
+        setSubmitting(true);
+        try {
+            const newJob = await createJob({ title, company, skills, description });
+            setJobs([newJob, ...jobs]);
+            setTitle('');
+            setCompany('');
+            setSkills('');
+            setDescription('');
+        } catch (error) {
+            console.error("Error creating job:", error);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -150,7 +154,7 @@ const Jobs = () => {
                             <div className="flex items-center justify-between text-xs font-medium text-gray-400 dark:text-gray-500">
                                 <div className="flex items-center space-x-1.5">
                                     <CalendarClock className="w-4 h-4" />
-                                    <span>Posted {job.date}</span>
+                                    <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
                                 </div>
                                 <button className="text-blue-600 dark:text-blue-400 hover:underline">View Candidates</button>
                             </div>

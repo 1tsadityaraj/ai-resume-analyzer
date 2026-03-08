@@ -1,35 +1,35 @@
+import { useState, useEffect } from 'react';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DashboardCard } from '../components/ui/DashboardCard';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { designSystem } from '../utils/designSystem';
+import { getAnalytics } from '../services/api';
 
-const monthlyData = [
-    { name: 'Jan', resumes: 120 },
-    { name: 'Feb', resumes: 180 },
-    { name: 'Mar', resumes: 250 },
-    { name: 'Apr', resumes: 210 },
-    { name: 'May', resumes: 340 },
-    { name: 'Jun', resumes: 410 },
-];
 
-const scoreDistData = [
-    { range: '90-100', count: 45 },
-    { range: '80-89', count: 120 },
-    { range: '70-79', count: 210 },
-    { range: '60-69', count: 85 },
-    { range: '<60', count: 30 },
-];
-
-const topSkillsData = [
-    { name: 'React', value: 400 },
-    { name: 'Node.js', value: 300 },
-    { name: 'Python', value: 300 },
-    { name: 'AWS', value: 200 },
-];
-const COLORS = ['#6366F1', '#8B5CF6', '#EC4899', '#14B8A6'];
+const COLORS = ['#6366F1', '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B'];
 
 const Analytics = () => {
+    const [monthlyData, setMonthlyData] = useState([]);
+    const [scoreDistData, setScoreDistData] = useState([]);
+    const [topSkillsData, setTopSkillsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            try {
+                const data = await getAnalytics();
+                setMonthlyData(data.monthlyUploads || []);
+                setScoreDistData(data.scoreDistribution || []);
+                setTopSkillsData(data.topSkills || []);
+            } catch (error) {
+                console.error("Error fetching analytics:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAnalytics();
+    }, []);
     return (
         <SectionContainer>
             <PageHeader
