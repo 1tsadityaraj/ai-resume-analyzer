@@ -56,6 +56,13 @@
 
 ---
 
+### Job Finder
+> AI-powered job & internship recommendations based on your analyzed resume skills. Get direct search links to platforms like LinkedIn, Wellfound, Internshala, Indeed, Naukri, and Glassdoor.
+
+![Job Finder](./screenshots/job-finder.png)
+
+---
+
 ### Settings
 > Manage profile information, toggle dark/light theme, and configure your Google Gemini API key.
 
@@ -68,6 +75,7 @@
 | Feature | Description |
 |---|---|
 | 🤖 **AI Resume Analysis** | Powered by Google Gemini to score resumes against job descriptions |
+| 💼 **AI Job Finder** | Automatically recommends relevant jobs from top platforms based on resume skills |
 | 📊 **ATS Match Score** | Instant percentage-based compatibility scoring |
 | 🔍 **Skill Gap Detection** | Identifies missing and matched skills automatically |
 | 💡 **Actionable Suggestions** | AI-generated improvement recommendations |
@@ -118,6 +126,7 @@ ai-resume-analyzer/
 │   │   │   ├── Home.jsx       # Resume Analyzer page
 │   │   │   ├── Candidates.jsx
 │   │   │   ├── Jobs.jsx
+│   │   │   ├── JobFinder.jsx
 │   │   │   ├── Analytics.jsx
 │   │   │   └── Settings.jsx
 │   │   ├── hooks/             # Custom React hooks
@@ -137,6 +146,7 @@ ai-resume-analyzer/
 │   │   ├── resume.js
 │   │   ├── candidateRoutes.js
 │   │   ├── jobRoutes.js
+│   │   ├── jobFinderRoutes.js
 │   │   ├── analyticsRoutes.js
 │   │   └── settingsRoutes.js
 │   ├── services/              # Business logic (AI analysis)
@@ -215,6 +225,7 @@ Navigate to [http://localhost:5173](http://localhost:5173) and start analyzing r
 | `GET` | `/api/jobs` | Get all job postings |
 | `POST` | `/api/jobs` | Create a new job posting |
 | `DELETE` | `/api/jobs/:id` | Delete a job posting |
+| `GET` | `/api/job-finder` | Get AI-powered job recommendations based on candidate skills |
 | `GET` | `/api/analytics` | Get analytics data (monthly uploads, score distribution, top skills) |
 | `GET` | `/api/settings` | Get application settings |
 | `PUT` | `/api/settings` | Update application settings (e.g., API key) |
@@ -240,7 +251,8 @@ Navigate to [http://localhost:5173](http://localhost:5173) and start analyzing r
 2. **Paste Job Description** — Enter the target job's requirements
 3. **AI Analysis** — Google Gemini parses your resume text and evaluates it against the job description
 4. **Get Results** — View your ATS match score, matched/missing skills, and personalized improvement tips
-5. **Track Candidates** — All analyzed resumes are saved and searchable in the Candidates dashboard
+5. **Find Jobs** — Instantly get AI-curated job recommendations and direct platform search links based on your skills
+6. **Track Candidates** — All analyzed resumes are saved and searchable in the Candidates dashboard
 
 ---
 
