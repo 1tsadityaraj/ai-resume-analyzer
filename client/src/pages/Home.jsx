@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { analyzeResume } from '../services/api';
+import { useState, useEffect } from 'react';
+import { analyzeResume, getCandidates } from '../services/api';
 import UploadDropzone from '../components/UploadDropzone';
 import AnalysisResult from '../components/AnalysisResult';
+import { Link } from 'react-router-dom';
 import { Loader2, Briefcase, FileSearch, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SectionContainer } from '../components/ui/SectionContainer';
@@ -11,10 +12,35 @@ import { designSystem } from '../utils/designSystem';
 
 const Home = () => {
     const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        // Try to load the most recent candidate analysis if we navigate back to this page
+        const loadRecentAnalysis = async () => {
+            try {
+                const candidates = await getCandidates();
+                if (candidates && candidates.length > 0) {
+                    const latest = candidates[0];
+                    setResult({
+                        matchScore: latest.matchScore || latest.atsScore || 0,
+                        atsScore: latest.atsScore || latest.matchScore || 0,
+                        matchedSkills: latest.matchedSkills || latest.skills || [],
+                        missingSkills: latest.missingSkills || [],
+                        suggestions: latest.suggestions || []
+                    });
+                    if (latest.jobDescription) setJobDescription(latest.jobDescription);
+                    if (latest.name) setFileName(latest.name + '.pdf');
+                }
+            } catch (err) {
+                console.error("Could not load recent analysis", err);
+            }
+        };
+        loadRecentAnalysis();
+    }, []);
 
     const handleAnalyze = async () => {
         if (!file) {
@@ -28,6 +54,7 @@ const Home = () => {
         try {
             const response = await analyzeResume(file, jobDescription);
             setResult(response.data.analysis);
+            setFileName(file.name);
         } catch (err) {
             setError(err.response?.data?.error || "An error occurred during analysis.");
             console.error(err);
@@ -96,36 +123,70 @@ const Home = () => {
 
             {/* Results Area */}
             {result && !loading && (
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="mt-16 border-t border-gray-200 dark:border-gray-800 pt-12"
-                >
-                    <div className="grid lg:grid-cols-2 gap-8 items-start">
-                        {/* Resume Preview */}
-                        <div className="flex flex-col w-full h-full space-y-6 lg:sticky lg:top-8">
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-                                <FileText className="w-6 h-6 mr-3 text-indigo-500" />
-                                Resume Preview
-                            </h3>
-                            <div className="w-full h-[600px] lg:h-[800px] rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800/50">
-                                {file && (
-                                    <iframe
-                                        src={URL.createObjectURL(file)}
-                                        className="w-full h-full"
-                                        title="Resume Preview"
-                                    />
-                                )}
+                <div className="mt-16 border-t border-gray-200 dark:border-gray-800 pt-12">
+                    {/* Removed items-start so columns stretch to equal height */}
+                    <div className="grid lg:grid-cols-2 gap-8 relative">
+                        {/* Left Column (stretching to max height) */}
+                        <div className="w-full">
+                            {/* Sticky Content inside the column */}
+                            <div className="flex flex-col w-full lg:sticky lg:top-8 z-10 pb-8">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 40 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6, ease: "easeOut" }}
+                                    className="w-full space-y-6"
+                                >
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                                        <FileText className="w-6 h-6 mr-3 text-indigo-500" />
+                                        Resume Preview
+                                    </h3>
+                                    <div className="w-full h-[600px] lg:h-[calc(100vh-8rem)] rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800/50">
+                                        {file ? (
+                                            <iframe
+                                                src={URL.createObjectURL(file)}
+                                                className="w-full h-full"
+                                                title="Resume Preview"
+                                            />
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-500 dark:text-gray-400">
+                                                <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" />
+                                                <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Previous Resume: {fileName || 'Analyzed'}</h4>
+                                                <p className="text-sm max-w-sm">
+                                                    The resume preview is only available immediately after a new upload. The analysis results on the right have been restored from your last session.
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
                             </div>
                         </div>
 
                         {/* Analysis Results */}
-                        <div className="flex flex-col w-full">
-                            <AnalysisResult data={result} />
+                        <div className="flex flex-col w-full space-y-6">
+                            <motion.div
+                                initial={{ opacity: 0, y: 40 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                            >
+                                <AnalysisResult data={result} />
+                                
+                                {/* Call to Action for Job Finder */}
+                                <div className="mt-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-800/50 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+                                    <div className="mb-4 sm:mb-0">
+                                        <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">&quot;Find Jobs&quot; using these skills?</h4>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Let AI find the perfect matches for you on real job boards.</p>
+                                    </div>
+                                    <Link 
+                                        to="/job-finder" 
+                                        className="whitespace-nowrap px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl shadow-md shadow-indigo-200 dark:shadow-none transition-colors"
+                                    >
+                                        Jump to Job Finder
+                                    </Link>
+                                </div>
+                            </motion.div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             )}
         </SectionContainer>
     );

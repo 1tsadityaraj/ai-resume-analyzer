@@ -46,6 +46,17 @@ export const deleteJob = async (id) => {
     return response.data;
 };
 
+export const getJobRecommendations = async (skillsArray) => {
+    const skillsParam = skillsArray.join(',');
+    const response = await axios.get(`${API_BASE_URL}/jobs/recommended?skills=${encodeURIComponent(skillsParam)}`);
+    return response.data;
+};
+
+export const findJobs = async () => {
+    const response = await axios.get(`${API_BASE_URL}/job-finder`);
+    return response.data;
+};
+
 export const getAnalytics = async () => {
     const response = await axios.get(`${API_BASE_URL}/analytics`);
     return response.data;

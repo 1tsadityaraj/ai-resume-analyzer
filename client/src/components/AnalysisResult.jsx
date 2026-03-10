@@ -20,6 +20,22 @@ const AnalysisResult = ({ data }) => {
         scoreColor = "text-yellow-500 stroke-yellow-500 dark:text-yellow-400 dark:stroke-yellow-400";
     }
 
+    // Helper to format basic markdown like **bold** in the feedback text
+    const formatText = (text) => {
+        if (!text) return text;
+        const parts = text.split(/(\*\*.*?\*\*)/g);
+        return parts.map((part, i) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return (
+                    <strong key={i} className="font-bold text-gray-900 dark:text-white">
+                        {part.slice(2, -2)}
+                    </strong>
+                );
+            }
+            return part;
+        });
+    };
+
     return (
         <div className="w-full max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header / Match Score Card */}
@@ -109,7 +125,9 @@ const AnalysisResult = ({ data }) => {
                     {suggestions.map((suggestion, index) => (
                         <li key={index} className="flex items-start space-x-3 p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-50 dark:border-blue-900/20 transition-all hover:shadow-md">
                             <span className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-blue-500"></span>
-                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">{suggestion}</p>
+                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                                {formatText(suggestion)}
+                            </p>
                         </li>
                     ))}
                 </ul>

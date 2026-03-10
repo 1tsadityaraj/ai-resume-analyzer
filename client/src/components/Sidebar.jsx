@@ -8,7 +8,8 @@ import {
     Info,
     BrainCircuit,
     Moon,
-    Sun
+    Sun,
+    Search
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
@@ -22,6 +23,7 @@ const Sidebar = () => {
         { name: 'Resume Analyzer', icon: FileSearch, path: '/analyzer' },
         { name: 'Candidates', icon: Users, path: '/candidates' },
         { name: 'Job Postings', icon: Briefcase, path: '/jobs' },
+        { name: 'Job Finder', icon: Search, path: '/job-finder' },
         { name: 'Analytics', icon: BarChart, path: '/analytics' },
         { name: 'Settings', icon: Settings, path: '/settings' },
     ];

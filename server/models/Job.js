@@ -17,6 +17,14 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    location: {
+        type: String,
+        default: 'Remote'
+    },
+    applyUrl: {
+        type: String,
+        default: ''
+    },
     status: {
         type: String,
         default: 'Active'

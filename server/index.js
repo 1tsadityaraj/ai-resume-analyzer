@@ -7,6 +7,7 @@ import candidateRoutes from './routes/candidateRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import jobFinderRoutes from './routes/jobFinderRoutes.js';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use('/api/candidates', candidateRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/job-finder', jobFinderRoutes);
 
 // Health check
 app.get('/', (req, res) => {

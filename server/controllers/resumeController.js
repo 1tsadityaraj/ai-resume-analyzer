@@ -57,6 +57,6 @@ export const analyzeResume = async (req, res) => {
 
     } catch (error) {
         console.error('Error analyzing resume:', error);
-        res.status(500).json({ error: 'Failed to analyze resume' });
+        res.status(500).json({ error: 'Failed to analyze resume', details: error.message, stack: error.stack });
     }
 };
