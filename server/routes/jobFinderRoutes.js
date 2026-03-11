@@ -121,19 +121,22 @@ Return JSON only in this format:
 
         let parsed = { jobs: [] };
         try {
-            const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/```\n([\s\S]*?)\n```/);
-            let jsonStr = jsonMatch ? jsonMatch[1] : text;
+            // More robust extraction: find the first { and the last }
+            let jsonStr = text;
+            const startIndex = text.indexOf('{');
+            const endIndex = text.lastIndexOf('}');
             
-            // Cleanup any trailing garbage outside JSON
-            const startIndex = jsonStr.indexOf('{');
-            const endIndex = jsonStr.lastIndexOf('}');
             if (startIndex !== -1 && endIndex !== -1) {
-                jsonStr = jsonStr.slice(startIndex, endIndex + 1);
+                jsonStr = text.slice(startIndex, endIndex + 1);
             }
+            
+            // Further cleanup: remove markdown code block ticks if they were inside the slice
+            jsonStr = jsonStr.replace(/^```json\n/, '').replace(/```$/, '').trim();
             
             parsed = JSON.parse(jsonStr);
         } catch (parseError) {
             console.error("Failed to parse Gemini JSON output:", parseError, text);
+            // On parse error, we'll hit the catch block below and use template fallback
             throw new Error("Invalid JSON from AI");
         }
 
