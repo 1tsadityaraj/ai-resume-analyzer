@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import { motion } from 'framer-motion';
-import { Info, RotateCw, FileText, Users, Star, Clock, MoreVertical } from 'lucide-react';
+import { Info, RotateCw, FileText, Users, Star, Clock, MoreVertical, TrendingUp, Zap } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -83,7 +83,8 @@ const Dashboard = () => {
                                 <FileText className="w-5 h-5" />
                             </div>
                             <span className="text-green-500 dark:text-green-400 text-xs font-semibold flex items-center bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                                ↗ +12%
+                                <TrendingUp className="w-3 h-3 mr-1" />
+                                +12%
                             </span>
                         </div>
                         {isMutating ? (
@@ -105,7 +106,8 @@ const Dashboard = () => {
                                 <Users className="w-5 h-5" />
                             </div>
                             <span className="text-green-500 dark:text-green-400 text-xs font-semibold flex items-center bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                                ↗ +8%
+                                <TrendingUp className="w-3 h-3 mr-1" />
+                                +8%
                             </span>
                         </div>
                         {isMutating ? (
@@ -127,7 +129,8 @@ const Dashboard = () => {
                                 <Star className="w-5 h-5" />
                             </div>
                             <span className="text-green-500 dark:text-green-400 text-xs font-semibold flex items-center bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                                ↗ +5%
+                                <TrendingUp className="w-3 h-3 mr-1" />
+                                +5%
                             </span>
                         </div>
                         {isMutating ? (
@@ -149,7 +152,8 @@ const Dashboard = () => {
                                 <Clock className="w-5 h-5" />
                             </div>
                             <span className="text-green-500 dark:text-green-400 text-xs font-semibold flex items-center bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                                ⚡️ Fast
+                                <Zap className="w-3 h-3 mr-1" />
+                                Fast
                             </span>
                         </div>
                         {isMutating ? (

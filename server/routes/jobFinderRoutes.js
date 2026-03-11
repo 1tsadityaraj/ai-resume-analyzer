@@ -13,12 +13,12 @@ const buildPlatformLinks = (skills) => {
     const query = encodeURIComponent(skills.join(' '));
     const skillsSlug = skills.slice(0, 3).map(s => s.toLowerCase().replace(/[^a-z0-9]/g, '-')).join('-');
     return [
-        { name: 'LinkedIn', url: `https://www.linkedin.com/jobs/search/?keywords=${query}`, logo: '💼' },
-        { name: 'Wellfound', url: `https://wellfound.com/jobs?q=${query}`, logo: '🚀' },
-        { name: 'Internshala', url: `https://internshala.com/internships/keywords-${skills.slice(0, 3).join(',')}`, logo: '🎓' },
-        { name: 'Indeed', url: `https://www.indeed.com/jobs?q=${query}`, logo: '🔍' },
-        { name: 'Naukri', url: `https://www.naukri.com/${skillsSlug}-jobs`, logo: '📋' },
-        { name: 'Glassdoor', url: `https://www.glassdoor.co.in/Job/jobs.htm?sc.keyword=${query}`, logo: '🏢' },
+        { name: 'LinkedIn', url: `https://www.linkedin.com/jobs/search/?keywords=${query}` },
+        { name: 'Wellfound', url: `https://wellfound.com/jobs?q=${query}` },
+        { name: 'Internshala', url: `https://internshala.com/internships/keywords-${skills.slice(0, 3).join(',')}` },
+        { name: 'Indeed', url: `https://www.indeed.com/jobs?q=${query}` },
+        { name: 'Naukri', url: `https://www.naukri.com/${skillsSlug}-jobs` },
+        { name: 'Glassdoor', url: `https://www.glassdoor.co.in/Job/jobs.htm?sc.keyword=${query}` },
     ];
 };
 
