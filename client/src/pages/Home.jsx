@@ -3,7 +3,7 @@ import { analyzeResume, getCandidates } from '../services/api';
 import UploadDropzone from '../components/UploadDropzone';
 import AnalysisResult from '../components/AnalysisResult';
 import { Link } from 'react-router-dom';
-import { Loader2, Briefcase, FileSearch, FileText } from 'lucide-react';
+import { Loader2, Briefcase, FileSearch, FileText, Cpu, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SectionContainer } from '../components/ui/SectionContainer';
 import { UploadCard } from '../components/ui/UploadCard';
@@ -169,6 +169,49 @@ const Home = () => {
                                 transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                             >
                                 <AnalysisResult data={result} />
+
+                                {/* Extracted Skills Visualization */}
+                                {(result.matchedSkills?.length > 0 || result.missingSkills?.length > 0) && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.5, delay: 0.3 }}
+                                        className="mt-6 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden"
+                                    >
+                                        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                                                        <Cpu className="w-5 h-5 text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-lg font-bold text-white">Extracted Skills from Resume</h4>
+                                                        <p className="text-indigo-100 text-xs font-medium opacity-80">AI-detected skills powering your job recommendations</p>
+                                                    </div>
+                                                </div>
+                                                <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
+                                                    {(result.matchedSkills || []).length} skills found
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="flex flex-wrap gap-2">
+                                                {(result.matchedSkills || []).map((skill, index) => (
+                                                    <motion.span 
+                                                        key={index}
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ delay: 0.4 + (index * 0.04), duration: 0.3 }}
+                                                        className="inline-flex items-center px-3.5 py-1.5 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-semibold rounded-full border border-indigo-100 dark:border-indigo-800/50 shadow-sm hover:shadow-md hover:scale-105 transition-all cursor-default"
+                                                    >
+                                                        <Sparkles className="w-3 h-3 mr-1.5 text-indigo-400" />
+                                                        {skill}
+                                                    </motion.span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
                                 
                                 {/* Call to Action for Job Finder */}
                                 <div className="mt-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-800/50 flex flex-col sm:flex-row items-center justify-between shadow-sm">

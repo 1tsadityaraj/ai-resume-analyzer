@@ -311,7 +311,7 @@ const Jobs = () => {
 
                         {/* Stats Section */}
                         {!loading && recommendedJobs.length > 0 && (
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center space-x-4">
                                     <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
                                         <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -381,6 +381,12 @@ const Jobs = () => {
                         )}
 
                         {/* Recommendation Grid */}
+                        {!loading && recommendedJobs.length > 0 && (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                                <Sparkles className="w-4 h-4 text-indigo-500" />
+                                Top jobs matched based on your resume skills
+                            </p>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <AnimatePresence>
                                 {recommendedJobs.map((job, idx) => (
@@ -393,7 +399,7 @@ const Jobs = () => {
                                     >
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex-1 min-w-0">
-                                                <h4 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{job.title}</h4>
+                                                <h4 className="text-lg font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" title={job.title}>{job.title}</h4>
                                                 <div className="mt-2 space-y-1.5">
                                                     <div className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400">
                                                         <Building2 className="w-3.5 h-3.5 mr-2 text-gray-400" />
@@ -414,7 +420,7 @@ const Jobs = () => {
                                                     {job.matchScore}% Match
                                                 </span>
                                             </div>
-                                            <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                                 <motion.div 
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${job.matchScore}%` }}
