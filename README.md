@@ -29,7 +29,7 @@
 ---
 
 ### Resume Analyzer
-> Upload a PDF resume and paste a job description. The AI instantly evaluates ATS compatibility, match score, missing skills, and provides actionable suggestions.
+> Upload a PDF resume and paste a job description. The AI instantly evaluates ATS compatibility, identifies skill gaps, and provides actionable suggestions. Also features a dynamic "Extracted Skills from Resume" visualization section highlighting the exact AI-detected skills.
 
 ![Resume Analyzer](./screenshots/resume-analyzer.png)
 
@@ -43,7 +43,7 @@
 ---
 
 ### Job Postings
-> Create and manage job requisitions. Track active openings with required skills and descriptions.
+> Create and manage job requisitions. Automatically find candidate matches for active openings and view dynamic intelligent job recommendations with beautifully polished UI progress bars, skill chips, and live metric calculations.
 
 ![Job Postings](./screenshots/jobs.png)
 
@@ -57,7 +57,7 @@
 ---
 
 ### Job Finder
-> AI-powered job & internship recommendations based on your analyzed resume skills. Get direct search links to platforms like LinkedIn, Wellfound, Internshala, Indeed, Naukri, and Glassdoor.
+> AI-powered job & internship recommendations naturally mapped from extracted candidate skills. Features fluid hover animations, dynamic match score badges, elegant skeleton loaders, and intelligent edge case handling (e.g., missing apply URLs and graceful empty states).
 
 ![Job Finder](./screenshots/job-finder.png)
 
