@@ -261,12 +261,16 @@ Navigate to [http://localhost:5173](http://localhost:5173) and start analyzing r
 ## 🚀 Deployment
 
 ### Backend (Render)
+- **Live API URL:** [https://ai-resume-analyzer-22f8.onrender.com/](https://ai-resume-analyzer-22f8.onrender.com/)
+
 1. Provide the repository access to Render.
 2. Set the build command to `npm install` and the start command to `npm start` in the `server` directory.
 3. Add your environment variables: `PORT=5001` and `GEMINI_API_KEY`.
 4. Deploy the webservice. Your backend API will be available on the Render URL.
 
 ### Frontend (Vercel)
+- **Live Demo URL:** [https://client-blue-xi.vercel.app](https://client-blue-xi.vercel.app)
+
 1. Ensure your client's `api.js` points to the deployed backend URL (or uses a `VITE_API_URL` env variable).
 2. Through the Vercel CLI or Dashboard, import the repository and set the Root Directory to `client`.
 3. Vercel automatically detects the Vite framework and runs `npm run build`.
