@@ -260,6 +260,22 @@ Navigate to [http://localhost:5173](http://localhost:5173) and start analyzing r
 
 ---
 
+## 🚀 Deployment
+
+### Backend (Render)
+1. Provide the repository access to Render.
+2. Set the build command to `npm install` and the start command to `npm start` in the `server` directory.
+3. Add your environment variables: `PORT=5001` and `GEMINI_API_KEY`.
+4. Deploy the webservice. Your backend API will be available on the Render URL.
+
+### Frontend (Vercel)
+1. Ensure your client's `api.js` points to the deployed backend URL (or uses a `VITE_API_URL` env variable).
+2. Through the Vercel CLI or Dashboard, import the repository and set the Root Directory to `client`.
+3. Vercel automatically detects the Vite framework and runs `npm run build`.
+4. Wait for it to deploy and get your live frontend link.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
