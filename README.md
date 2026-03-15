@@ -5,7 +5,7 @@
 <h1 align="center">🧠 AI Resume Analyzer</h1>
 
 <p align="center">
-  <strong>An AI-powered ATS (Applicant Tracking System) that analyzes resumes against job descriptions using Google Gemini AI.</strong>
+  <strong>An intelligent, end-to-end Applicant Tracking System (ATS) engineered to streamline recruitment.<br>Powered by Google Gemini AI, it autonomously evaluates resumes against job descriptions to provide instant match scores, <br>identify skill gaps, and surface top candidates—drastically reducing manual screening time.</strong>
 </p>
 
 <p align="center">
@@ -74,21 +74,19 @@
 
 ---
 
-## ✨ Features
+## ✨ Core Features & Business Impact
 
-| Feature | Description |
+| Feature | Business Value |
 |---|---|
-| 🤖 **AI Resume Analysis** | Powered by Google Gemini to score resumes against job descriptions |
-| 💼 **AI Job Finder** | Automatically recommends relevant jobs from top platforms based on resume skills |
-| 📊 **ATS Match Score** | Instant percentage-based compatibility scoring |
-| 🔍 **Skill Gap Detection** | Identifies missing and matched skills automatically |
-| 💡 **Actionable Suggestions** | AI-generated improvement recommendations |
-| 📈 **Analytics Dashboard** | Visual charts for monthly trends, score distributions, and skill breakdowns |
-| 👥 **Candidate Management** | Search, filter, view, and delete analyzed candidates |
-| 💼 **Job Postings** | Create and manage job requisitions with required skills |
-| 🌙 **Dark / Light Mode** | Full theme support with smooth transitions |
-| 📄 **PDF Preview** | In-browser resume preview alongside analysis results |
-| ⚡ **Real-time Updates** | Live API status, SWR data fetching with auto-revalidation |
+| 🤖 **Automated Screening** | Powered by Google Gemini AI, it reads and evaluates resumes instantly, eliminating hours of manual parsing |
+| 📊 **Precision Match Scoring** | Delivers objective, percentage-based compatibility scores to help recruiters rank candidates immediately |
+| 🔍 **Skill Gap Analysis** | Automatically maps a candidate's skills against job requirements, highlighting exact matches and missing proficiencies |
+| 📈 **Recruitment Analytics** | Visualizes application trends, average candidate quality, and top skills through a sleek, real-time dashboard |
+| 💼 **Smart Job Sourcing** | Recommends relevant job openings based on a candidate's extracted profile to build dynamic talent pipelines |
+| 👥 **Talent Pool Management** | A centralized hub to search, filter, and review analyzed candidates with a single click |
+| 📝 **Job Requisitions** | Easily create and manage job postings and defining required skills for the AI to benchmark against |
+| ⚡ **Actionable Insights** | Generates tailored improvement suggestions to help candidates optimize their profiles and stand out |
+| 🎨 **Premium UX/UI** | Built with an engaging, accessible, and responsive interface featuring dark mode, animations, and zero-loading-state perception |
 
 ---
 
