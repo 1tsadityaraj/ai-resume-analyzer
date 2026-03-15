@@ -17,6 +17,10 @@
   <img src="https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
 </p>
 
+<p align="center">
+  <strong>🚀 <a href="https://client-blue-xi.vercel.app">Live Demo (Frontend)</a></strong> | <strong>☁️ <a href="https://ai-resume-analyzer-22f8.onrender.com/">Live API (Backend)</a></strong>
+</p>
+
 ---
 
 ## 📸 Screenshots
